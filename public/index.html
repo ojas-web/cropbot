@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ollama AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="logo">
+      🤖 Ollama AI
+    </div>
+
+    <button id="newChat" class="new-chat">
+      + New Chat
+    </button>
+
+    <div id="history" class="history"></div>
+  </aside>
+
+  <main class="main">
+
+    <div id="chat" class="chat">
+
+      <div class="welcome">
+        <h1>How can I help today?</h1>
+      </div>
+
+    </div>
+
+    <div class="input-container">
+
+      <input
+        id="message"
+        type="text"
+        placeholder="Message AI..."
+      >
+
+      <button id="mic">🎤</button>
+
+      <button id="send">➤</button>
+
+    </div>
+
+  </main>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
