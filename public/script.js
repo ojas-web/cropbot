@@ -57,7 +57,7 @@ async function sendMessage(){
         const data = await response.json();
 
         typing.remove();
-
+console.log(data.reply);
        renderAIMessage(
           data.reply || "NO RESPONSE"
        );
