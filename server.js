@@ -21,7 +21,7 @@ content: "You are a helpful AI assistant."
 
 app.post("/chat", async (req, res) => {
 
-```
+
 try {
 
     const userMessage = req.body.message;
@@ -80,7 +80,7 @@ try {
         reply: "Server Error"
     });
 }
-```
+
 
 });
 
