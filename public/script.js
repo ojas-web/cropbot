@@ -1,11 +1,69 @@
+
+let currentChat = null;
+let chats =
+    JSON.parse(
+        localStorage.getItem("chats")
+    ) || [];
+
+let currentChat = null;
 const chat = document.getElementById("chat");
 const sendBtn = document.getElementById("send");
 const micBtn = document.getElementById("mic");
 const input = document.getElementById("message");
 const newChatBtn = document.getElementById("newChat");
+function saveChats(){
 
+    localStorage.setItem(
+        "chats",
+        JSON.stringify(chats)
+    );
+}
 let chatHistory = [];
+function renderSidebar(){
 
+    const history =
+        document.getElementById("history");
+
+    history.innerHTML = "";
+
+    chats.forEach(chatItem => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "history-item";
+
+        item.textContent =
+            chatItem.title;
+
+        item.onclick = () => {
+
+            currentChat = chatItem;
+
+            chat.innerHTML = "";
+
+            chatItem.messages.forEach(msg => {
+
+                if(msg.role === "user"){
+
+                    addMessage(
+                        msg.content,
+                        "user"
+                    );
+
+                }else{
+
+                    renderAIMessage(
+                        msg.content
+                    );
+                }
+            });
+        };
+
+        history.appendChild(item);
+    });
+}
 function addMessage(text,type){
 
     const div = document.createElement("div");
@@ -26,10 +84,27 @@ async function sendMessage(){
     const text = input.value.trim();
 
     if(!text) return;
+    if(!currentChat){
 
+    currentChat = {
+        id: Date.now(),
+        title: text.substring(0,30),
+        messages: []
+    };
+
+    chats.unshift(currentChat);
+    
+    renderSidebar();
+        saveChats();
+}
     document.querySelector(".welcome")?.remove();
 
     addMessage(text,"user");
+    currentChat.messages.push({
+    role: "user",
+    content: text
+});
+    saveChats();
 
     input.value = "";
 
@@ -61,8 +136,11 @@ console.log(data.reply);
        renderAIMessage(
           data.reply || "NO RESPONSE"
        );
-
-        saveHistory(text);
+     currentChat.messages.push({
+    role: "assistant",
+    content: data.reply
+});
+        
 
     }catch(err){
 
@@ -73,22 +151,7 @@ console.log(data.reply);
     }
 }
 
-function saveHistory(text){
 
-    const history =
-        document.getElementById("history");
-
-    const item =
-        document.createElement("div");
-
-    item.className =
-        "history-item";
-
-    item.textContent =
-        text.substring(0,30);
-
-    history.prepend(item);
-}
 
 sendBtn.addEventListener(
     "click",
@@ -104,17 +167,16 @@ input.addEventListener(
     }
 );
 
-newChatBtn.addEventListener(
-    "click",
-    ()=>{
+newChatBtn.addEventListener("click",()=>{
 
-        chat.innerHTML=`
+    currentChat = null;
+
+    chat.innerHTML = `
         <div class="welcome">
-        <h1>How can I help today?</h1>
+            <h1>How can I help today?</h1>
         </div>
-        `;
-    }
-);
+    `;
+});
 
 if(
     "webkitSpeechRecognition"
@@ -305,4 +367,41 @@ function toggleThink(header){
         header.innerHTML =
             "Hide Thinking";
     }
+}
+
+renderSidebar();
+
+if(chats.length){
+
+    currentChat = chats[0];
+
+    currentChat.messages.forEach(msg=>{
+
+        if(msg.role==="user"){
+
+            addMessage(
+                msg.content,
+                "user"
+            );
+
+        }else{
+
+            renderAIMessage(
+                msg.content
+            );
+        }
+    });
+}
+
+if(
+    currentChat.title ===
+    "New Chat"
+){
+
+    currentChat.title =
+        text.substring(0,30);
+
+    renderSidebar();
+
+    saveChats();
 }
