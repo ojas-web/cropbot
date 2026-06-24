@@ -1,5 +1,4 @@
 
-let currentChat = null;
 let chats =
     JSON.parse(
         localStorage.getItem("chats")
